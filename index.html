@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0b3b3c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pump Log">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Daily Pump Operation</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -245,6 +252,17 @@ textarea:focus{outline:none;border-color:var(--water);box-shadow:0 0 0 3px color
 .navart .ml{left:0}
 .navart .mr{right:0;transform:scaleX(-1)}
 .sgi{max-width:92%;max-height:8mm;object-fit:contain;vertical-align:middle}
+.tka{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--water) 14%,var(--surface));color:var(--water);text-decoration:none}
+.rembar{position:fixed;left:12px;right:12px;top:calc(8px + env(safe-area-inset-top,0px));max-width:536px;margin:0 auto;z-index:45;transform:translateY(-160%);transition:transform .25s var(--ease-out);pointer-events:none}
+.rembar.on{transform:translateY(0);pointer-events:auto}
+.rem{display:flex;gap:10px;align-items:center;background:var(--ink);color:var(--bg);border-radius:18px;padding:12px 14px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.remt{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.remt b{font-size:.76rem;opacity:.75}
+.remt span{font-weight:600;word-break:break-word}
+.remt .remd{font-weight:400;font-size:.8rem;opacity:.8}
+.reml{display:flex;gap:6px;flex:none}
+.remb{min-width:40px;height:40px;padding:0 10px;border-radius:12px;border:0;background:rgba(127,127,127,.25);color:inherit;display:grid;place-items:center;text-decoration:none;font-size:.8rem;font-weight:600}
+@media (prefers-reduced-motion:reduce){.rembar{transform:none;opacity:0;transition:opacity .15s}.rembar.on{opacity:1}}
 .hide{display:none}
 .note{font-size:.85rem;color:var(--muted);margin:8px 0 0}
 #sheet,#usheet{display:none}
@@ -364,6 +382,7 @@ body.locked .top,body.locked main,body.locked .tabs{display:none}
 </head>
 <body>
 <div id="bnSheetWrap" class="sheet-wrap" aria-hidden="true"><div class="sheet-bd" data-close="1"></div><div class="sheet" id="bnSheet" role="dialog" aria-modal="true" aria-label="Details"><div class="grab" aria-hidden="true"></div><div id="bnSheetBody"></div></div></div>
+<div id="remBar" class="rembar" role="alert" aria-live="assertive"></div>
 <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <div id="gate" class="hide" role="dialog" aria-modal="true" aria-label="Sign in"></div>
 <header class="top"><div class="topin"><h1 id="title">Home</h1><p id="today"></p></div><button type="button" class="av hide" id="avatar" aria-label="Open profile"></button><svg class="wave" viewBox="0 0 400 22" preserveAspectRatio="none" aria-hidden="true"><path d="M0 22V9c33-11 66 9 100 3s67-12 100-3 67 10 100 2 67-6 100-1v12z" style="fill:var(--bg)"/></svg></header>
@@ -402,6 +421,7 @@ body.locked .top,body.locked main,body.locked .tabs{display:none}
   </div>
   <div id="tkHome" class="hide"><div id="ntTabs2"></div>
    <div class="row sp" style="margin-bottom:12px"><h2 class="h2" style="margin:0" id="tkCount">Tasks</h2><button type="button" class="pri sm" id="tkNew" style="padding:8px 18px">+ New task</button></div>
+   <div id="ntfBox"></div>
    <div id="tkList"></div>
   </div>
   <div id="tkEdit" class="hide"></div>
@@ -2141,15 +2161,21 @@ function tkBadge(){
  if(!b)return;
  b.textContent=n;b.setAttribute('aria-label',n+' tasks due');show('ntBadge',n>0);
 }
+var ICAL='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+var REM=[['','No reminder'],['0','At due time'],['15','15 minutes before'],['60','1 hour before'],['1440','1 day before']];
+function personOf(t){return(S.bene||[]).filter(function(b){return b.id===t.person})[0]}
+function tkPhone(t){var p=personOf(t);return t.phone||(p&&p.phone)||''}
+function tkMap(t){if(t.place)return okLink(t.place)?t.place:mapUrl('',t.place);var p=personOf(t);return p?mapUrl(p.link,p.co):''}
 function tkRow(t){
- var st=tkState(t),sn=schName(t.scheme),per=(S.bene||[]).filter(function(b){return b.id===t.person})[0];
+ var st=tkState(t),sn=schName(t.scheme),per=personOf(t),ph=tkPhone(t),mu=tkMap(t);
+ var act=t.type==='call'&&ph?'<a class="tka" href="tel:+91'+ph+'" aria-label="Call">'+IPH+'</a>':(t.type==='visit'&&mu?'<a class="tka" href="'+esc(mu)+'" target="_blank" rel="noopener" aria-label="Open map">'+IPIN+'</a>':'');
  return'<div class="tk'+(t.done?' done':'')+'"><button type="button" class="tkc'+(tkPop===t.id?' pop':'')+'" data-tdone="'+t.id+'" role="checkbox" aria-checked="'+(t.done?'true':'false')+'" aria-label="Mark '+esc(t.title)+' done">'+ITICK+'</button>'
-  +'<button type="button" class="tkm" data-tid="'+t.id+'"><span class="tkt">'+esc(t.title)+'</span><span class="tkd '+st+'">'+tkIcon(t.type)+esc(tkDue(t))+(sn?' · '+esc(sn):'')+(per?' · '+esc(per.name):'')+'</span></button></div>';
+  +'<button type="button" class="tkm" data-tid="'+t.id+'"><span class="tkt">'+esc(t.title)+'</span><span class="tkd '+st+'">'+tkIcon(t.type)+esc(tkDue(t))+(sn?' · '+esc(sn):'')+(per?' · '+esc(per.name):'')+'</span></button>'+(t.done?'':act)+'</div>';
 }
 function renderTasks(){
  var L=tkList(),open=L.filter(function(t){return!t.done}).length;
  $('tkCount').textContent=open?'Tasks · '+open+' open':'Tasks';
- renderNtTabs('tasks');
+ renderNtTabs('tasks');renderNtf();
  if(!L.length){$('tkList').innerHTML='<div class="panel" style="text-align:center;padding:28px 16px"><b class="ct">No tasks yet</b><button type="button" class="pri" id="tkNew2" style="margin-top:6px">Add a task</button></div>';return}
  var g={over:[],today:[],up:[],none:[],done:[]};
  L.slice().sort(tkSort).forEach(function(t){g[tkState(t)].push(t)});
@@ -2166,15 +2192,25 @@ function toggleTask(id){
  t.done=!t.done;t.doneAt=t.done?new Date().toISOString():'';tkPop=t.done?id:'';
  save();renderTasks();tkBadge();
 }
+function gcalUrl(t){
+ function z(n){return String(n).padStart(2,'0')}
+ var d=t.due.replace(/-/g,''),dates,e;
+ if(t.time){e=new Date(t.due+'T'+t.time+':00');e.setMinutes(e.getMinutes()+30);dates=d+'T'+t.time.replace(':','')+'00/'+e.getFullYear()+z(e.getMonth()+1)+z(e.getDate())+'T'+z(e.getHours())+z(e.getMinutes())+'00'}
+ else{e=new Date(t.due+'T00:00:00');e.setDate(e.getDate()+1);dates=d+'/'+e.getFullYear()+z(e.getMonth()+1)+z(e.getDate())}
+ var det=[tkTypeName(t.type),schName(t.scheme),t.details].filter(Boolean).join(' · '),mu=tkMap(t);
+ return'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(t.title)+'&dates='+dates+'&details='+encodeURIComponent(det)+(mu?'&location='+encodeURIComponent(mu):'');
+}
 function viewTask(id){
  var t=tkList().filter(function(z){return z.id===id})[0];if(!t)return;
  tkEditId=id;
- var sn=schName(t.scheme),per=(S.bene||[]).filter(function(b){return b.id===t.person})[0],acts='';
- if(per&&per.phone)acts+='<a class="bl" href="tel:+91'+per.phone+'" aria-label="Call">'+IPH+'Call</a><a class="bl" href="https://wa.me/91'+per.phone+'" target="_blank" rel="noopener" aria-label="WhatsApp">'+IWA+'WhatsApp</a>';
- var mu=per?mapUrl(per.link,per.co):'';
- if(mu)acts+='<a class="bl" href="'+esc(mu)+'" target="_blank" rel="noopener" aria-label="Open location in Google Maps">'+IPIN+'Map</a>';
+ var sn=schName(t.scheme),per=personOf(t),ph=tkPhone(t),mu=tkMap(t),acts='';
+ if(t.type==='call'&&ph)acts+='<a class="bl" href="tel:+91'+ph+'" aria-label="Call">'+IPH+'Call</a><a class="bl" href="https://wa.me/91'+ph+'" target="_blank" rel="noopener" aria-label="WhatsApp">'+IWA+'WhatsApp</a>';
+ if(t.type==='visit'&&mu)acts+='<a class="bl" href="'+esc(mu)+'" target="_blank" rel="noopener" aria-label="Open location in Google Maps">'+IPIN+'Map</a>';
+ if(t.due)acts+='<a class="bl" href="'+esc(gcalUrl(t))+'" target="_blank" rel="noopener" aria-label="Add to calendar">'+ICAL+'Calendar</a>';
+ var rm=REM.filter(function(x){return x[0]===String(t.remind===undefined?'':t.remind)})[0];
  $('bnSheetBody').innerHTML='<div class="panel"><b class="sn">'+esc(t.title)+'</b><span class="bsub">'+tkTypeName(t.type)+' · '+esc(tkDue(t))+(t.done?' · Done':'')+'</span>'
   +((sn||per)?'<div class="tags">'+(sn?'<span class="tg el">'+esc(sn)+'</span>':'')+(per?'<span class="tg">'+esc(per.name)+'</span>':'')+'</div>':'')
+  +(rm&&rm[0]!==''?'<div class="kv" style="margin-top:12px"><span>Reminder</span>'+rm[1]+'</div>':'')
   +(t.details?'<p style="margin:12px 0 0;white-space:pre-wrap;word-break:break-word;line-height:1.5">'+esc(t.details)+'</p>':'')+'</div>'
   +(acts?'<div class="panel bcard"><div class="bact">'+acts+'</div></div>':'')
   +'<div class="actions"><button type="button" id="tkvDone">'+(t.done?'Reopen':'Mark done')+'</button><button type="button" class="pri" id="tkvEdit">Edit</button></div><button type="button" id="tkvClose" style="width:100%;margin-top:8px">Close</button>';
@@ -2184,11 +2220,14 @@ function openTask(id){
  var t=id==='new'?null:tkList().filter(function(z){return z.id===id})[0];
  if(id!=='new'&&!t)return;
  tkEditId=id;
- var people=(S.bene||[]).slice().sort(function(a,b){return a.name.toLowerCase()>b.name.toLowerCase()?1:-1});
+ var people=(S.bene||[]).slice().sort(function(a,b){return a.name.toLowerCase()>b.name.toLowerCase()?1:-1}),ty=t?t.type:'call';
  $('tkEdit').innerHTML='<h2 class="h2">'+(t?'Edit task':'New task')+'</h2><div class="panel"><label for="tkTitle">Task</label><input id="tkTitle" autocomplete="off" value="'+esc(t?t.title:'')+'">'
-  +'<div style="margin-top:12px"><label>Type</label>'+seg('tkty',TKT,t?t.type:'call','Task type')+'</div>'
+  +'<div style="margin-top:12px"><label>Type</label>'+seg('tkty',TKT,ty,'Task type')+'</div>'
+  +'<div id="tkPh"'+(ty==='call'?'':' class="hide"')+' style="margin-top:12px"><label for="tkPhone">Phone number (optional)</label><input id="tkPhone" type="tel" inputmode="numeric" maxlength="10" data-ph="1" placeholder="10-digit number" value="'+esc(t&&t.phone||'')+'"></div>'
+  +'<div id="tkPl"'+(ty==='visit'?'':' class="hide"')+' style="margin-top:12px"><label for="tkPlace">Location (optional)</label><input id="tkPlace" autocomplete="off" placeholder="Google Maps link or 26.7271, 94.6372" value="'+esc(t&&t.place||'')+'"></div>'
   +'<div style="margin-top:12px"><label for="tkDue">Due date</label><input id="tkDue" type="date" value="'+esc(t?t.due:'')+'"><div class="actions" style="margin-top:8px"><button type="button" class="sm" data-tkd="0">Today</button><button type="button" class="sm" data-tkd="1">Tomorrow</button><button type="button" class="sm" data-tkd="7">Next week</button></div></div>'
   +'<div style="margin-top:12px"><label for="tkTime">Time (optional)</label><input id="tkTime" type="time" value="'+esc(t?t.time:'')+'"></div>'
+  +'<div style="margin-top:12px"><label for="tkRem">Reminder</label><select id="tkRem">'+REM.map(function(x){return'<option value="'+x[0]+'"'+(String(t&&t.remind!==undefined?t.remind:'')===x[0]?' selected':'')+'>'+x[1]+'</option>'}).join('')+'</select></div>'
   +'<div style="margin-top:12px"><label for="tkSch">Scheme (optional)</label><select id="tkSch"><option value="">None</option>'+S.schemes.map(function(x){return'<option value="'+x.id+'"'+(t&&t.scheme===x.id?' selected':'')+'>'+esc(x.name)+'</option>'}).join('')+'</select></div>'
   +(people.length?'<div style="margin-top:12px"><label for="tkPer">Person (optional)</label><select id="tkPer"><option value="">None</option>'+people.map(function(b){return'<option value="'+b.id+'"'+(t&&t.person===b.id?' selected':'')+'>'+esc(b.name)+(b.village?' ('+esc(b.village)+')':'')+'</option>'}).join('')+'</select></div>':'')
   +'<div style="margin-top:12px"><label for="tkDet">Details (optional)</label><textarea id="tkDet" style="min-height:90px">'+esc(t?t.details:'')+'</textarea></div>'
@@ -2198,15 +2237,22 @@ function openTask(id){
 }
 function closeTask(){tkEditId=null;show('tkEdit',false);show('tkHome',true);renderTasks();tkBadge()}
 function saveTask(){
- var title=$('tkTitle').value.trim(),due=$('tkDue').value,time=$('tkTime').value,er=$('tkErr');
+ var title=$('tkTitle').value.trim(),due=$('tkDue').value,time=$('tkTime').value,rem=$('tkRem').value,er=$('tkErr'),ty=document.querySelector('input[name=tkty]:checked').value;
  function bad(m,id){er.textContent=m;show('tkErr',true);$(id).focus()}
  if(!title)return bad('Enter the task.','tkTitle');
- if(time&&!due)return bad('Pick a due date for the time.','tkDue');
+ if((time||rem!=='')&&!due)return bad('Pick a due date first.','tkDue');
+ var phr=$('tkPhone').value.trim(),ph=phr?normPhone(phr):'',pl=$('tkPlace').value.trim();
+ if(ty==='call'&&phr&&!/^\d{10}$/.test(ph))return bad('Enter a 10-digit phone number, or leave it blank.','tkPhone');
+ if(ty==='visit'&&pl&&!okLink(pl)&&!parseCo(pl))return bad('Paste a Google Maps link, or coordinates like 26.7271, 94.6372.','tkPlace');
  var per=$('tkPer')?$('tkPer').value:'',L=tkList(),t=tkEditId==='new'?null:L.filter(function(z){return z.id===tkEditId})[0];
- var rec={title:title,type:document.querySelector('input[name=tkty]:checked').value,due:due,time:time,scheme:$('tkSch').value,person:per,details:$('tkDet').value.trim()};
- if(t)Object.keys(rec).forEach(function(k){t[k]=rec[k]});
- else{rec.id='t'+Date.now()+Math.random().toString(36).slice(2,6);rec.done=false;rec.doneAt='';rec.created=new Date().toISOString();L.push(rec)}
- save();toast('Task saved');closeTask();
+ var rec={title:title,type:ty,due:due,time:time,remind:rem,phone:ty==='call'?ph:'',place:ty==='visit'?pl:'',scheme:$('tkSch').value,person:per,details:$('tkDet').value.trim()};
+ if(t){
+  var chg=t.due!==due||t.time!==time||String(t.remind===undefined?'':t.remind)!==rem;
+  Object.keys(rec).forEach(function(k){t[k]=rec[k]});
+  if(chg){t.notified=false;t.snoozeAt=0}
+ }else{rec.id='t'+Date.now()+Math.random().toString(36).slice(2,6);rec.done=false;rec.doneAt='';rec.created=new Date().toISOString();rec.notified=false;rec.snoozeAt=0;L.push(rec);t=rec}
+ var at=remAt(t);if(at&&at<Date.now())t.notified=true;
+ save();toast('Task saved');closeTask();checkReminders();
 }
 function deleteTask(){S.tasks=tkList().filter(function(z){return z.id!==tkEditId});save();toast('Task deleted');closeTask()}
 
@@ -2279,6 +2325,47 @@ function clearSigns(){
  save();renderList();renderSheet();toast('Signatures cleared','info');
 }
 
+/* reminders */
+var remQ=[];
+function remAt(t){
+ if(t.snoozeAt)return t.snoozeAt;
+ if(!t.due||t.remind===''||t.remind===undefined)return 0;
+ return new Date(t.due+'T'+(t.time||'09:00')+':00').getTime()-(+t.remind)*60000;
+}
+function nativeNotify(t){
+ try{if(window.Notification&&Notification.permission==='granted'&&document.hidden)new Notification('Reminder: '+t.title,{body:tkDue(t),tag:t.id})}catch(e){}
+}
+function renderRem(){
+ var el=$('remBar');
+ remQ=remQ.filter(function(id){var t=tkList().filter(function(z){return z.id===id})[0];return t&&!t.done});
+ if(!remQ.length){el.classList.remove('on');el.innerHTML='';return}
+ var t=tkList().filter(function(z){return z.id===remQ[0]})[0],ph=tkPhone(t),mu=tkMap(t);
+ el.innerHTML='<div class="rem"><div class="remt"><b>Reminder'+(remQ.length>1?' · '+remQ.length+' due':'')+'</b><span>'+esc(t.title)+'</span><span class="remd">'+esc(tkDue(t))+'</span></div><div class="reml">'
+  +(t.type==='call'&&ph?'<a class="remb" href="tel:+91'+ph+'" aria-label="Call">'+IPH+'</a>':'')
+  +(t.type==='visit'&&mu?'<a class="remb" href="'+esc(mu)+'" target="_blank" rel="noopener" aria-label="Open map">'+IPIN+'</a>':'')
+  +'<button type="button" class="remb" data-rdone="'+t.id+'">Done</button><button type="button" class="remb" data-rsnz="'+t.id+'" aria-label="Snooze 10 minutes">+10m</button><button type="button" class="remb" data-rx="1" aria-label="Dismiss">✕</button></div></div>';
+ el.classList.add('on');
+}
+function checkReminders(){
+ if(!S.tasks)return;
+ var now=Date.now(),fired=false;
+ tkList().forEach(function(t){
+  if(t.done||t.notified)return;
+  var at=remAt(t);
+  if(!at||at>now)return;
+  t.notified=true;t.snoozeAt=0;fired=true;
+  if(remQ.indexOf(t.id)<0)remQ.push(t.id);
+  nativeNotify(t);
+ });
+ if(fired){save();tkBadge();if(!$('tkHome').classList.contains('hide'))renderTasks()}
+ renderRem();
+}
+function renderNtf(){
+ var b=$('ntfBox');if(!b)return;
+ var need=window.Notification&&Notification.permission==='default'&&tkList().some(function(t){return!t.done&&t.remind!==''&&t.remind!==undefined});
+ b.innerHTML=need?'<button type="button" id="ntfAllow" style="width:100%;margin-bottom:12px">Allow notifications for reminders</button>':'';
+}
+
 /* events */
 $('tabs').addEventListener('click',function(e){var b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
 $('vUtil').addEventListener('click',function(e){
@@ -2292,6 +2379,18 @@ window.addEventListener('afterprint',function(){document.body.classList.remove('
 $('impPick').addEventListener('click',function(){$('impFile').click()});
 $('impFile').addEventListener('change',function(e){impFile(e.target.files[0]);e.target.value=''});
 $('impTpl').addEventListener('click',impTemplate);
+$('ntfBox').addEventListener('click',function(e){
+ if(e.target.id!=='ntfAllow')return;
+ try{Notification.requestPermission().then(function(r){renderNtf();toast(r==='granted'?'Notifications allowed':'Notifications weren’t allowed','info')})}catch(x){toast('Notifications aren’t available here.','info')}
+});
+$('remBar').addEventListener('click',function(e){
+ var b=e.target.closest('button');if(!b)return;
+ if(b.dataset.rdone){toggleTask(b.dataset.rdone);renderRem()}
+ else if(b.dataset.rsnz){var t=tkList().filter(function(z){return z.id===b.dataset.rsnz})[0];if(t){t.notified=false;t.snoozeAt=Date.now()+600000;remQ=remQ.filter(function(x){return x!==t.id});save();renderRem();toast('Snoozed for 10 minutes','info')}}
+ else if(b.dataset.rx){remQ.shift();renderRem()}
+});
+$('tkEdit').addEventListener('change',function(e){if(e.target.name==='tkty'){show('tkPh',e.target.value==='call');show('tkPl',e.target.value==='visit')}});
+document.addEventListener('visibilitychange',function(){if(!document.hidden)checkReminders()});
 document.querySelector('main').addEventListener('click',function(e){
  var b=e.target.closest('button');if(!b)return;
  if(b.id==='sgPick')$('sgFile').click();
@@ -2615,7 +2714,9 @@ $('copyBtn').addEventListener('click',function(){
 $('today').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 applyPrefs();renderAvatar();go('home');
 if(S.profile)renderLock();else renderSetup();
+checkReminders();setInterval(checkReminders,30000);
 })();
 </script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}</script>
 </body>
 </html>
