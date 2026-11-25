@@ -1,23 +1,20 @@
-DAILY PUMP OPERATION - installable app package
+# Daily Pump Operation PWA
 
-FILES
-  index.html            the app
-  manifest.webmanifest  name, colours and icons for installing
-  sw.js                 makes the app work offline
-  icons/                app icons
+## Files
+- `index.html`: your existing app, with PWA metadata and service-worker registration added.
+- `manifest.webmanifest`: install name, launch URL, display mode and icon declarations.
+- `sw.js`: offline app-shell caching and same-origin asset caching.
+- `icons/`: install icons in the required sizes.
 
-PUT IT ONLINE (free, needs HTTPS)
-  1. Upload this whole folder to GitHub Pages, Netlify (drag and drop) or Cloudflare Pages.
-  2. Open the web address once on your phone, with internet.
-  3. Chrome on Android: menu > Install app (or Add to Home screen).
-  After that first visit the app opens and works without internet.
+## Publish on GitHub Pages
+1. Extract this ZIP.
+2. Upload **the contents** of this folder to the root of the GitHub Pages publishing folder (not the ZIP itself).
+3. Keep the folder structure unchanged, especially `icons/`.
+4. Commit/push and wait for GitHub Pages to redeploy.
+5. Open the HTTPS GitHub Pages URL in Chrome, refresh, then use Chrome menu > Install app (or Add to Home screen).
 
-ANDROID APK (optional)
-  Go to pwabuilder.com, enter your web address, choose Android and download the package.
-
-UPDATING
-  When you replace index.html, change VERSION in sw.js (for example dpo-v2), then upload again.
-
-YOUR DATA
-  Entries are saved inside the app on the phone, tied to the web address. A new address starts empty.
-  Before moving, use Settings > Backup and restore > Save backup, then Restore from file in the new app.
+## Important
+- This package keeps the app's existing HTML and local data logic. It does not add a shared cloud database or multi-user sync.
+- The service worker caches the app shell for offline launching. Features relying on external services/CDNs (for example Google Fonts or the ExcelJS CDN) may still need internet.
+- If your repository is a project site such as `https://username.github.io/repository/`, the relative paths in this package are intentional. Do not change them to root paths.
+- After updating an already-installed version, close the app and reopen it. If Chrome still shows an old version, clear the site's storage/cache once and reload.

@@ -4,13 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0b3b3c">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Pump Log">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
 <title>Daily Pump Operation</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -251,7 +250,7 @@ textarea:focus{outline:none;border-color:var(--water);box-shadow:0 0 0 3px color
 .navart svg{position:absolute;bottom:0;width:120px;height:140px;overflow:visible;filter:drop-shadow(0 1.5px 1.5px rgba(30,36,0,.32))}
 .navart .ml{left:0}
 .navart .mr{right:0;transform:scaleX(-1)}
-.sgi{max-width:92%;max-height:8mm;object-fit:contain;vertical-align:middle}
+.sgi{max-width:94%;max-height:8.4mm;object-fit:contain;vertical-align:middle}
 .tka{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--water) 14%,var(--surface));color:var(--water);text-decoration:none}
 .rembar{position:fixed;left:12px;right:12px;top:calc(8px + env(safe-area-inset-top,0px));max-width:536px;margin:0 auto;z-index:45;transform:translateY(-160%);transition:transform .25s var(--ease-out);pointer-events:none}
 .rembar.on{transform:translateY(0);pointer-events:auto}
@@ -263,6 +262,46 @@ textarea:focus{outline:none;border-color:var(--water);box-shadow:0 0 0 3px color
 .reml{display:flex;gap:6px;flex:none}
 .remb{min-width:40px;height:40px;padding:0 10px;border-radius:12px;border:0;background:rgba(127,127,127,.25);color:inherit;display:grid;place-items:center;text-decoration:none;font-size:.8rem;font-weight:600}
 @media (prefers-reduced-motion:reduce){.rembar{transform:none;opacity:0;transition:opacity .15s}.rembar.on{opacity:1}}
+.fab{position:fixed;right:18px;bottom:calc(96px + env(safe-area-inset-bottom,0px));width:56px;height:56px;padding:0;border-radius:50%;border:0;background:var(--water);color:var(--onwater);display:grid;place-items:center;box-shadow:0 8px 20px rgba(0,0,0,.25);z-index:12}
+.seg-s span{min-height:36px;padding:7px 8px;font-size:.9rem}
+.cmp input,.cmp select{min-height:40px;padding:6px 14px;border-radius:999px}
+.nt{padding:12px 14px;margin-bottom:8px;border-radius:16px}
+.ntx{-webkit-line-clamp:3}
+.tks{margin:12px 2px 6px}
+@media screen and (min-width:700px){
+ main,.topin{max-width:720px}
+ .tabs{max-width:640px}
+ .navart{max-width:664px}
+ .cards{grid-template-columns:repeat(3,1fr)}
+}
+@media screen and (min-width:1024px){
+ body{padding-left:208px}
+ main,.topin{max-width:1040px}
+ main{padding:6px 28px 48px}
+ .av{right:28px}
+ .tabs{left:0;right:auto;top:0;bottom:0;width:208px;max-width:none;margin:0;border:0;border-right:1px solid var(--line);border-radius:0;padding:18px 12px;box-shadow:none}
+ .tabs::before{content:"Pump Log";display:block;padding:4px 14px 16px;font:700 1.15rem "Bricolage Grotesque","Figtree",system-ui,sans-serif;color:var(--ink)}
+ .tabs div{flex-direction:column;max-width:none;gap:4px}
+ .tabs button{flex:none;flex-direction:row;justify-content:flex-start;gap:12px;min-height:48px;padding:8px 14px;font-size:.95rem;border-radius:14px}
+ .navart{display:none!important}
+ .fab{right:32px;bottom:32px}
+ .toast{left:calc(50% + 104px);bottom:32px}
+ .rembar{left:220px}
+ #list{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;align-items:start}
+ #list>button,#list>.panel{grid-column:1/-1}
+ #list .day{margin-bottom:0}
+ #sList,#bnList,#ntList,#tkList{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;align-items:start}
+ #sList>*,#bnList>*,#ntList>*,#tkList>*{margin-bottom:0}
+ #sList>:only-child,#bnList>:only-child,#ntList>:only-child,#tkList>:only-child,#tkList>.tks,#tkList>details{grid-column:1/-1}
+ .stats{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+ #vSettings,#vProfile,#vTpl,#vUtil,#vWeather,#mEdit,#bnEdit,#tkEdit,#ntEdit{max-width:760px;margin-left:auto;margin-right:auto}
+ #vReview{max-width:900px;margin-left:auto;margin-right:auto}
+ #wxBox .wxd{margin:0 -28px!important;padding:2px 28px 6px}
+ .sheet{left:auto;right:0;top:0;bottom:0;max-width:440px;max-height:none;margin:0;border-radius:24px 0 0 24px;transform:translateX(100%)}
+ .sheet-wrap.open .sheet{transform:translateX(0)}
+ .grab{display:none}
+}
+@media screen and (min-width:1024px) and (prefers-reduced-motion:reduce){.sheet{transform:none;opacity:0}.sheet-wrap.open .sheet{opacity:1}}
 .hide{display:none}
 .note{font-size:.85rem;color:var(--muted);margin:8px 0 0}
 #sheet,#usheet{display:none}
@@ -413,14 +452,14 @@ body.locked .top,body.locked main,body.locked .tabs{display:none}
  </div>
  <div id="vWeather" class="hide"><button type="button" class="sm" data-go="home" style="margin-bottom:10px">← Back to Home</button><div id="wlBody"></div><span id="wlLive" class="sr" role="status" aria-live="polite"></span></div>
  <div id="vNotes" class="hide">
-  <button type="button" class="sm" data-go="home" style="margin-bottom:10px">← Back to Home</button>
+  
   <div id="ntHome"><div id="ntTabs1"></div>
-   <div class="row sp" style="margin-bottom:12px"><h2 class="h2" style="margin:0" id="ntCount">Notes</h2><button type="button" class="pri sm" id="ntNew" style="padding:8px 18px">+ New note</button></div>
-   <div class="row" style="margin-bottom:12px"><div><input id="ntQ" type="search" placeholder="Search notes" aria-label="Search notes"></div><div style="flex:0 0 40%"><select id="ntF" aria-label="Filter by scheme"></select></div></div>
+   <h2 class="sr" id="ntCount">Notes</h2><button type="button" class="fab" id="ntNew" aria-label="New note"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+   <div class="row cmp" style="margin-bottom:8px"><div><input id="ntQ" type="search" placeholder="Search" aria-label="Search notes"></div><div style="flex:0 0 36%"><select id="ntF" aria-label="Filter by scheme"></select></div></div>
    <div id="ntList"></div>
   </div>
   <div id="tkHome" class="hide"><div id="ntTabs2"></div>
-   <div class="row sp" style="margin-bottom:12px"><h2 class="h2" style="margin:0" id="tkCount">Tasks</h2><button type="button" class="pri sm" id="tkNew" style="padding:8px 18px">+ New task</button></div>
+   <h2 class="sr" id="tkCount">Tasks</h2><button type="button" class="fab" id="tkNew" aria-label="New task"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
    <div id="ntfBox"></div>
    <div id="tkList"></div>
   </div>
@@ -1057,8 +1096,8 @@ function addSheet(wb,name,sc,p,items){
   ws.getRow(row).height=40.5;
   if(it&&it.r.sg&&S.sign){
    if(wb._sg===undefined)wb._sg=wb.addImage({base64:S.sign,extension:'png'});
-   var dm=S.signDim||{w:140,h:44},k2=Math.min(140/dm.w,44/dm.h,1);
-   ws.addImage(wb._sg,{tl:{col:9.08,row:row-1+0.1},ext:{width:Math.round(dm.w*k2),height:Math.round(dm.h*k2)}});
+   var dm=S.signDim||{w:140,h:44},k2=Math.min(148/dm.w,44/dm.h,2),iw=Math.round(dm.w*k2),ih=Math.round(dm.h*k2);
+   ws.addImage(wb._sg,{tl:{col:9+(165-iw)/2/165,row:row-1+(54-ih)/2/54},ext:{width:iw,height:ih}});
   }
   for(c=0;c<11;c++){
    var cell=put(String.fromCharCode(65+c)+row,null,N,{horizontal:'center',vertical:'middle',wrapText:true},true);
@@ -2147,7 +2186,7 @@ function tkDue(t){
 function tkSort(a,b){return((a.due||'9999')+(a.time||'99:99'))>((b.due||'9999')+(b.time||'99:99'))?1:-1}
 function renderNtTabs(a){
  var open=tkList().filter(function(t){return!t.done}).length;
- function h(n){return'<div class="seg" role="radiogroup" aria-label="Show" style="margin-bottom:12px"><label><input type="radio" name="ntk'+n+'" value="notes"'+(a==='notes'?' checked':'')+'><span>Notes</span></label><label><input type="radio" name="ntk'+n+'" value="tasks"'+(a==='tasks'?' checked':'')+'><span>Tasks'+(open?' ('+open+')':'')+'</span></label></div>'}
+ function h(n){return'<div class="seg seg-s" role="radiogroup" aria-label="Show" style="margin-bottom:8px"><label><input type="radio" name="ntk'+n+'" value="notes"'+(a==='notes'?' checked':'')+'><span>Notes</span></label><label><input type="radio" name="ntk'+n+'" value="tasks"'+(a==='tasks'?' checked':'')+'><span>Tasks'+(open?' ('+open+')':'')+'</span></label></div>'}
  $('ntTabs1').innerHTML=h(1);$('ntTabs2').innerHTML=h(2);
 }
 function switchNt(k){
@@ -2163,14 +2202,33 @@ function tkBadge(){
 }
 var ICAL='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
 var REM=[['','No reminder'],['0','At due time'],['15','15 minutes before'],['60','1 hour before'],['1440','1 day before']];
+var RPT=[['dpo','DPO report'],['util','Utilisation statement'],['other','Other report']];
+function rptName(k){var x=RPT.filter(function(r){return r[0]===k})[0];return x?x[1]:'Report'}
+function schemeOf(id){return S.schemes.filter(function(x){return x.id===id})[0]}
+function pointOf(sid,pid){var sc=schemeOf(sid);return sc?sc.points.filter(function(x){return x.id===pid})[0]:null}
 function personOf(t){return(S.bene||[]).filter(function(b){return b.id===t.person})[0]}
 function tkPhone(t){var p=personOf(t);return t.phone||(p&&p.phone)||''}
-function tkMap(t){if(t.place)return okLink(t.place)?t.place:mapUrl('',t.place);var p=personOf(t);return p?mapUrl(p.link,p.co):''}
+function tkMap(t){
+ if(t.vt==='point'){var pt=pointOf(t.scheme,t.point);return pt?mapUrl(pt.link,pt.co):''}
+ if(t.vt==='place'||(!t.vt&&t.place))return t.place?(okLink(t.place)?t.place:mapUrl('',t.place)):'';
+ var p=personOf(t);return p?mapUrl(p.link,p.co):'';
+}
+function tkCtx(t){
+ var p=personOf(t),sn=schName(t.scheme),o=[];
+ if(t.type==='call')o.push(p?p.name:(t.whoName||''));
+ else if(t.type==='visit'){
+  if(t.vt==='point'){var pt=pointOf(t.scheme,t.point);o.push(sn);if(pt)o.push(pt.name)}
+  else if(t.vt==='place')o.push(t.placeName||'Other place');
+  else if(p)o.push(p.name);
+ }else if(t.type==='report'){o.push(rptName(t.rpt));if(t.rpt!=='other')o.push(sn);if(t.rptMonth)o.push(monthLabel(t.rptMonth))}
+ else o.push(sn);
+ return o.filter(Boolean);
+}
 function tkRow(t){
- var st=tkState(t),sn=schName(t.scheme),per=personOf(t),ph=tkPhone(t),mu=tkMap(t);
+ var st=tkState(t),ctx=tkCtx(t),ph=tkPhone(t),mu=tkMap(t);
  var act=t.type==='call'&&ph?'<a class="tka" href="tel:+91'+ph+'" aria-label="Call">'+IPH+'</a>':(t.type==='visit'&&mu?'<a class="tka" href="'+esc(mu)+'" target="_blank" rel="noopener" aria-label="Open map">'+IPIN+'</a>':'');
  return'<div class="tk'+(t.done?' done':'')+'"><button type="button" class="tkc'+(tkPop===t.id?' pop':'')+'" data-tdone="'+t.id+'" role="checkbox" aria-checked="'+(t.done?'true':'false')+'" aria-label="Mark '+esc(t.title)+' done">'+ITICK+'</button>'
-  +'<button type="button" class="tkm" data-tid="'+t.id+'"><span class="tkt">'+esc(t.title)+'</span><span class="tkd '+st+'">'+tkIcon(t.type)+esc(tkDue(t))+(sn?' · '+esc(sn):'')+(per?' · '+esc(per.name):'')+'</span></button>'+(t.done?'':act)+'</div>';
+  +'<button type="button" class="tkm" data-tid="'+t.id+'"><span class="tkt">'+esc(t.title)+'</span><span class="tkd '+st+'">'+tkIcon(t.type)+esc(tkDue(t))+(ctx.length?' · '+esc(ctx.join(' · ')):'')+'</span></button>'+(t.done?'':act)+'</div>';
 }
 function renderTasks(){
  var L=tkList(),open=L.filter(function(t){return!t.done}).length;
@@ -2197,55 +2255,138 @@ function gcalUrl(t){
  var d=t.due.replace(/-/g,''),dates,e;
  if(t.time){e=new Date(t.due+'T'+t.time+':00');e.setMinutes(e.getMinutes()+30);dates=d+'T'+t.time.replace(':','')+'00/'+e.getFullYear()+z(e.getMonth()+1)+z(e.getDate())+'T'+z(e.getHours())+z(e.getMinutes())+'00'}
  else{e=new Date(t.due+'T00:00:00');e.setDate(e.getDate()+1);dates=d+'/'+e.getFullYear()+z(e.getMonth()+1)+z(e.getDate())}
- var det=[tkTypeName(t.type),schName(t.scheme),t.details].filter(Boolean).join(' · '),mu=tkMap(t);
+ var det=[tkTypeName(t.type)].concat(tkCtx(t),[t.details]).filter(Boolean).join(' · '),mu=tkMap(t);
  return'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(t.title)+'&dates='+dates+'&details='+encodeURIComponent(det)+(mu?'&location='+encodeURIComponent(mu):'');
 }
 function viewTask(id){
  var t=tkList().filter(function(z){return z.id===id})[0];if(!t)return;
  tkEditId=id;
- var sn=schName(t.scheme),per=personOf(t),ph=tkPhone(t),mu=tkMap(t),acts='';
+ var ctx=tkCtx(t),ph=tkPhone(t),mu=tkMap(t),acts='';
  if(t.type==='call'&&ph)acts+='<a class="bl" href="tel:+91'+ph+'" aria-label="Call">'+IPH+'Call</a><a class="bl" href="https://wa.me/91'+ph+'" target="_blank" rel="noopener" aria-label="WhatsApp">'+IWA+'WhatsApp</a>';
  if(t.type==='visit'&&mu)acts+='<a class="bl" href="'+esc(mu)+'" target="_blank" rel="noopener" aria-label="Open location in Google Maps">'+IPIN+'Map</a>';
+ if(t.type==='report'&&(t.rpt==='dpo'||t.rpt==='util')&&schemeOf(t.scheme))acts+='<button type="button" class="bl" id="tkvOpen" style="border:0;background:none">'+IDOC+'Open report</button>';
  if(t.due)acts+='<a class="bl" href="'+esc(gcalUrl(t))+'" target="_blank" rel="noopener" aria-label="Add to calendar">'+ICAL+'Calendar</a>';
  var rm=REM.filter(function(x){return x[0]===String(t.remind===undefined?'':t.remind)})[0];
  $('bnSheetBody').innerHTML='<div class="panel"><b class="sn">'+esc(t.title)+'</b><span class="bsub">'+tkTypeName(t.type)+' · '+esc(tkDue(t))+(t.done?' · Done':'')+'</span>'
-  +((sn||per)?'<div class="tags">'+(sn?'<span class="tg el">'+esc(sn)+'</span>':'')+(per?'<span class="tg">'+esc(per.name)+'</span>':'')+'</div>':'')
+  +(ctx.length?'<div class="tags">'+ctx.map(function(x){return'<span class="tg">'+esc(x)+'</span>'}).join('')+'</div>':'')
+  +(t.type==='call'&&ph?'<div class="kv" style="margin-top:12px"><span>Number</span>'+esc(ph)+'</div>':'')
   +(rm&&rm[0]!==''?'<div class="kv" style="margin-top:12px"><span>Reminder</span>'+rm[1]+'</div>':'')
   +(t.details?'<p style="margin:12px 0 0;white-space:pre-wrap;word-break:break-word;line-height:1.5">'+esc(t.details)+'</p>':'')+'</div>'
   +(acts?'<div class="panel bcard"><div class="bact">'+acts+'</div></div>':'')
   +'<div class="actions"><button type="button" id="tkvDone">'+(t.done?'Reopen':'Mark done')+'</button><button type="button" class="pri" id="tkvEdit">Edit</button></div><button type="button" id="tkvClose" style="width:100%;margin-top:8px">Close</button>';
  openSheet();
 }
+function openTaskReport(id){
+ var t=tkList().filter(function(z){return z.id===id})[0];if(!t)return;
+ closeSheet();
+ if(t.rpt==='util'){S.ut.s=t.scheme;S.ut.m=t.rptMonth||S.month;save();go('util')}
+ else{var sc=schemeOf(t.scheme);if(!sc)return;S.cur=sc.id;S.pt=t.point&&pointOf(sc.id,t.point)?t.point:(sc.points[0]?sc.points[0].id:null);if(t.rptMonth)S.month=t.rptMonth;save();go('report')}
+}
+function tkVal(n){var e=document.querySelector('input[name='+n+']:checked');return e?e.value:''}
+function tkPeople(){return(S.bene||[]).slice().sort(function(a,b){return a.name.toLowerCase()>b.name.toLowerCase()?1:-1})}
+function tkOpts(list,cur,first){return(first?'<option value="">'+first+'</option>':'')+list.map(function(x){return'<option value="'+x[0]+'"'+(x[0]===cur?' selected':'')+'>'+esc(x[1])+'</option>'}).join('')}
+function tkFillPts(sid,sel,cur,all){
+ var sc=schemeOf(sid);
+ $(sel).innerHTML='<option value="">'+(all||'Choose a point')+'</option>'+(sc?sc.points.map(function(p){return'<option value="'+p.id+'"'+(p.id===cur?' selected':'')+'>'+esc(p.name)+'</option>'}).join(''):'');
+ $(sel).disabled=!sc;
+}
+function tkAuto(){
+ var ty=tkVal('tkty'),nm='';
+ if(ty==='call'){var w=$('tkWho').value,p=(S.bene||[]).filter(function(b){return b.id===w})[0];nm=p?p.name:$('tkWName').value.trim();return'Call'+(nm?' '+nm:'')}
+ if(ty==='visit'){
+  var vt=tkVal('tkvt');
+  if(vt==='person'){var q=(S.bene||[]).filter(function(b){return b.id===$('tkVPer').value})[0];return'Visit'+(q?' '+q.name:'')}
+  if(vt==='point'){var sc=schemeOf($('tkVSch').value),pt=pointOf($('tkVSch').value,$('tkVPoint').value);return'Visit'+(sc?' '+sc.name:'')+(pt?' · '+pt.name:'')}
+  return'Visit'+($('tkPName').value.trim()?' '+$('tkPName').value.trim():'')
+ }
+ if(ty==='report'){
+  var r=$('tkRpt').value,sch=schemeOf($('tkRSch').value),mo=$('tkRMon').value;
+  return'Prepare '+(r==='dpo'?'DPO report':r==='util'?'utilisation statement':'report')+(r!=='other'&&sch?' · '+sch.name:'')+(r!=='other'&&mo?' · '+monthLabel(mo):'');
+ }
+ return'';
+}
+function tkSync(){
+ var ty=tkVal('tkty'),w=$('tkWho').value,per=(S.bene||[]).filter(function(b){return b.id===w})[0],vt=tkVal('tkvt'),r=$('tkRpt').value,url='';
+ show('tkCall',ty==='call');show('tkVisit',ty==='visit');show('tkRptBox',ty==='report');show('tkOth',ty==='other');
+ show('tkOther',w==='_other');
+ $('tkWhoInfo').textContent=per?(per.phone?'Number: '+per.phone:'No number saved for this farmer.'):'';
+ show('tkVP',vt==='person');show('tkVPt',vt==='point');show('tkVPl',vt==='place');
+ if(vt==='person'){var q=(S.bene||[]).filter(function(b){return b.id===$('tkVPer').value})[0];url=q?mapUrl(q.link,q.co):''}
+ else if(vt==='point'){var pt=pointOf($('tkVSch').value,$('tkVPoint').value);url=pt?mapUrl(pt.link,pt.co):''}
+ else{var pl=$('tkPlace').value.trim();url=pl?(okLink(pl)?pl:mapUrl('',pl)):''}
+ $('tkMapInfo').textContent=ty==='visit'?(url?'Map location found.':'No location saved yet. The Map button won’t show.'):'';
+ show('tkRS',r!=='other');show('tkRPtBox',r==='dpo');
+ $('tkTitleL').textContent=ty==='other'?'Task':'Purpose (optional)';
+ $('tkTitle').placeholder=ty==='other'?'What needs to be done?':tkAuto();
+ $('tkRem').disabled=!$('tkDue').value;
+}
 function openTask(id){
  var t=id==='new'?null:tkList().filter(function(z){return z.id===id})[0];
  if(id!=='new'&&!t)return;
  tkEditId=id;
- var people=(S.bene||[]).slice().sort(function(a,b){return a.name.toLowerCase()>b.name.toLowerCase()?1:-1}),ty=t?t.type:'call';
- $('tkEdit').innerHTML='<h2 class="h2">'+(t?'Edit task':'New task')+'</h2><div class="panel"><label for="tkTitle">Task</label><input id="tkTitle" autocomplete="off" value="'+esc(t?t.title:'')+'">'
-  +'<div style="margin-top:12px"><label>Type</label>'+seg('tkty',TKT,ty,'Task type')+'</div>'
-  +'<div id="tkPh"'+(ty==='call'?'':' class="hide"')+' style="margin-top:12px"><label for="tkPhone">Phone number (optional)</label><input id="tkPhone" type="tel" inputmode="numeric" maxlength="10" data-ph="1" placeholder="10-digit number" value="'+esc(t&&t.phone||'')+'"></div>'
-  +'<div id="tkPl"'+(ty==='visit'?'':' class="hide"')+' style="margin-top:12px"><label for="tkPlace">Location (optional)</label><input id="tkPlace" autocomplete="off" placeholder="Google Maps link or 26.7271, 94.6372" value="'+esc(t&&t.place||'')+'"></div>'
-  +'<div style="margin-top:12px"><label for="tkDue">Due date</label><input id="tkDue" type="date" value="'+esc(t?t.due:'')+'"><div class="actions" style="margin-top:8px"><button type="button" class="sm" data-tkd="0">Today</button><button type="button" class="sm" data-tkd="1">Tomorrow</button><button type="button" class="sm" data-tkd="7">Next week</button></div></div>'
+ var ty=t?t.type:'call',people=tkPeople(),pOpts=people.map(function(b){return[b.id,b.name+(b.village?' ('+b.village+')':'')]}),sOpts=S.schemes.map(function(x){return[x.id,x.name]});
+ var who=t&&t.type==='call'?(t.person||(t.phone?'_other':'')):'',vt=t&&t.vt?t.vt:(t&&t.type==='visit'&&t.place&&!t.person?'place':'person'),rpt=t&&t.rpt?t.rpt:'dpo';
+ $('tkEdit').innerHTML='<h2 class="h2">'+(t?'Edit task':'New task')+'</h2>'
+  +'<div class="panel"><label>Type of task</label>'+seg('tkty',TKT,ty,'Task type')
+  +'<div id="tkCall" style="margin-top:12px"><label for="tkWho">Who are you calling?</label><select id="tkWho">'+tkOpts(pOpts,who,'Choose a farmer…')+'<option value="_other"'+(who==='_other'?' selected':'')+'>Other number…</option></select><p class="note" id="tkWhoInfo"></p>'
+  +'<div id="tkOther" class="hide"><div style="margin-top:10px"><label for="tkWName">Name (optional)</label><input id="tkWName" autocomplete="off" value="'+esc(t&&t.whoName||'')+'"></div><div style="margin-top:10px"><label for="tkPhone">Phone number</label><input id="tkPhone" type="tel" inputmode="numeric" maxlength="10" data-ph="1" placeholder="10-digit number" value="'+esc(t&&t.phone||'')+'"></div></div></div>'
+  +'<div id="tkVisit" class="hide" style="margin-top:12px"><label>Visit to</label>'+seg('tkvt',[['person','Farmer'],['point','Pump point'],['place','Other place']],vt,'Visit to')
+  +'<div id="tkVP" style="margin-top:10px"><select id="tkVPer" aria-label="Farmer">'+tkOpts(pOpts,t&&t.person,'Choose a farmer…')+'</select></div>'
+  +'<div id="tkVPt" class="hide" style="margin-top:10px"><select id="tkVSch" aria-label="Scheme">'+tkOpts(sOpts,t&&t.scheme,'Choose a scheme…')+'</select><div style="margin-top:8px"><select id="tkVPoint" aria-label="Point"></select></div></div>'
+  +'<div id="tkVPl" class="hide" style="margin-top:10px"><label for="tkPName">Place name (optional)</label><input id="tkPName" autocomplete="off" value="'+esc(t&&t.placeName||'')+'"><div style="margin-top:10px"><label for="tkPlace">Location</label><input id="tkPlace" autocomplete="off" placeholder="Google Maps link or 26.7271, 94.6372" value="'+esc(t&&t.place||'')+'"></div></div>'
+  +'<p class="note" id="tkMapInfo"></p></div>'
+  +'<div id="tkRptBox" class="hide" style="margin-top:12px"><label for="tkRpt">Report</label><select id="tkRpt">'+tkOpts(RPT,rpt)+'</select>'
+  +'<div id="tkRS"><div style="margin-top:10px"><label for="tkRSch">Scheme</label><select id="tkRSch">'+tkOpts(sOpts,t&&t.scheme,'Choose a scheme…')+'</select></div>'
+  +'<div id="tkRPtBox" style="margin-top:10px"><label for="tkRPt">Point</label><select id="tkRPt"></select></div>'
+  +'<div style="margin-top:10px"><label for="tkRMon">Month</label><input id="tkRMon" type="month" value="'+esc(t&&t.rptMonth||S.month)+'"></div></div></div>'
+  +'<div id="tkOth" class="hide" style="margin-top:12px"><label for="tkOSch">Scheme (optional)</label><select id="tkOSch">'+tkOpts(sOpts,t&&t.scheme,'None')+'</select></div>'
+  +'<div style="margin-top:12px"><label for="tkTitle" id="tkTitleL">Purpose (optional)</label><input id="tkTitle" autocomplete="off" value="'+esc(t?t.title:'')+'"></div></div>'
+  +'<div class="panel"><b class="ct">When</b><label for="tkDue">Due date</label><input id="tkDue" type="date" value="'+esc(t?t.due:'')+'"><div class="actions" style="margin-top:8px"><button type="button" class="sm" data-tkd="0">Today</button><button type="button" class="sm" data-tkd="1">Tomorrow</button><button type="button" class="sm" data-tkd="7">Next week</button></div>'
   +'<div style="margin-top:12px"><label for="tkTime">Time (optional)</label><input id="tkTime" type="time" value="'+esc(t?t.time:'')+'"></div>'
-  +'<div style="margin-top:12px"><label for="tkRem">Reminder</label><select id="tkRem">'+REM.map(function(x){return'<option value="'+x[0]+'"'+(String(t&&t.remind!==undefined?t.remind:'')===x[0]?' selected':'')+'>'+x[1]+'</option>'}).join('')+'</select></div>'
-  +'<div style="margin-top:12px"><label for="tkSch">Scheme (optional)</label><select id="tkSch"><option value="">None</option>'+S.schemes.map(function(x){return'<option value="'+x.id+'"'+(t&&t.scheme===x.id?' selected':'')+'>'+esc(x.name)+'</option>'}).join('')+'</select></div>'
-  +(people.length?'<div style="margin-top:12px"><label for="tkPer">Person (optional)</label><select id="tkPer"><option value="">None</option>'+people.map(function(b){return'<option value="'+b.id+'"'+(t&&t.person===b.id?' selected':'')+'>'+esc(b.name)+(b.village?' ('+esc(b.village)+')':'')+'</option>'}).join('')+'</select></div>':'')
-  +'<div style="margin-top:12px"><label for="tkDet">Details (optional)</label><textarea id="tkDet" style="min-height:90px">'+esc(t?t.details:'')+'</textarea></div>'
+  +'<div style="margin-top:12px"><label for="tkRem">Reminder</label><select id="tkRem">'+REM.map(function(x){return'<option value="'+x[0]+'"'+(String(t&&t.remind!==undefined?t.remind:'')===x[0]?' selected':'')+'>'+x[1]+'</option>'}).join('')+'</select></div></div>'
+  +'<div class="panel"><label for="tkDet">Notes (optional)</label><textarea id="tkDet" style="min-height:90px">'+esc(t?t.details:'')+'</textarea>'
   +'<p class="err hide" id="tkErr" role="alert"></p><div class="actions"><button type="button" id="tkCancel">Cancel</button><button type="button" class="pri" id="tkSave">Save task</button></div>'
   +(t?'<button type="button" class="dng" id="tkDel" style="width:100%">Delete task</button>':'')+'</div>';
- show('ntHome',false);show('tkHome',false);show('tkEdit',true);window.scrollTo(0,0);$('tkTitle').focus();
+ tkFillPts(t&&t.vt==='point'?t.scheme:'','tkVPoint',t&&t.point,'Choose a point');
+ tkFillPts(t&&t.type==='report'?t.scheme:'','tkRPt',t&&t.point,'All points');
+ show('ntHome',false);show('tkHome',false);show('tkEdit',true);tkSync();window.scrollTo(0,0);
 }
 function closeTask(){tkEditId=null;show('tkEdit',false);show('tkHome',true);renderTasks();tkBadge()}
 function saveTask(){
- var title=$('tkTitle').value.trim(),due=$('tkDue').value,time=$('tkTime').value,rem=$('tkRem').value,er=$('tkErr'),ty=document.querySelector('input[name=tkty]:checked').value;
+ var ty=tkVal('tkty'),due=$('tkDue').value,time=$('tkTime').value,rem=$('tkRem').disabled?'':$('tkRem').value,er=$('tkErr');
  function bad(m,id){er.textContent=m;show('tkErr',true);$(id).focus()}
- if(!title)return bad('Enter the task.','tkTitle');
- if((time||rem!=='')&&!due)return bad('Pick a due date first.','tkDue');
- var phr=$('tkPhone').value.trim(),ph=phr?normPhone(phr):'',pl=$('tkPlace').value.trim();
- if(ty==='call'&&phr&&!/^\d{10}$/.test(ph))return bad('Enter a 10-digit phone number, or leave it blank.','tkPhone');
- if(ty==='visit'&&pl&&!okLink(pl)&&!parseCo(pl))return bad('Paste a Google Maps link, or coordinates like 26.7271, 94.6372.','tkPlace');
- var per=$('tkPer')?$('tkPer').value:'',L=tkList(),t=tkEditId==='new'?null:L.filter(function(z){return z.id===tkEditId})[0];
- var rec={title:title,type:ty,due:due,time:time,remind:rem,phone:ty==='call'?ph:'',place:ty==='visit'?pl:'',scheme:$('tkSch').value,person:per,details:$('tkDet').value.trim()};
+ if(time&&!due)return bad('Pick a due date first.','tkDue');
+ var rec={title:'',type:ty,due:due,time:time,remind:rem,details:$('tkDet').value.trim(),scheme:'',point:'',person:'',phone:'',whoName:'',vt:'',place:'',placeName:'',rpt:'',rptMonth:''};
+ if(ty==='call'){
+  var w=$('tkWho').value;
+  if(!w)return bad('Choose a farmer, or pick “Other number”.','tkWho');
+  if(w==='_other'){
+   var ph=normPhone($('tkPhone').value);
+   if(!/^\d{10}$/.test(ph))return bad('Enter a 10-digit phone number.','tkPhone');
+   rec.phone=ph;rec.whoName=$('tkWName').value.trim();
+  }else rec.person=w;
+ }else if(ty==='visit'){
+  var vt=tkVal('tkvt');rec.vt=vt;
+  if(vt==='person'){rec.person=$('tkVPer').value;if(!rec.person)return bad('Choose a farmer.','tkVPer')}
+  else if(vt==='point'){rec.scheme=$('tkVSch').value;rec.point=$('tkVPoint').value;if(!rec.scheme)return bad('Choose a scheme.','tkVSch');if(!rec.point)return bad('Choose a point.','tkVPoint')}
+  else{
+   var pl=$('tkPlace').value.trim();
+   if(!pl||(!okLink(pl)&&!parseCo(pl)))return bad('Paste a Google Maps link, or coordinates like 26.7271, 94.6372.','tkPlace');
+   rec.place=pl;rec.placeName=$('tkPName').value.trim();
+  }
+ }else if(ty==='report'){
+  rec.rpt=$('tkRpt').value;
+  if(rec.rpt!=='other'){
+   rec.scheme=$('tkRSch').value;rec.rptMonth=$('tkRMon').value;
+   if(!rec.scheme)return bad('Choose a scheme.','tkRSch');
+   if(!rec.rptMonth)return bad('Choose the month.','tkRMon');
+   if(rec.rpt==='dpo')rec.point=$('tkRPt').value;
+  }
+ }else rec.scheme=$('tkOSch').value;
+ rec.title=$('tkTitle').value.trim()||tkAuto();
+ if(!rec.title)return bad('Enter the task.','tkTitle');
+ if(rem!==''&&!due)return bad('Pick a due date first.','tkDue');
+ var L=tkList(),t=tkEditId==='new'?null:L.filter(function(z){return z.id===tkEditId})[0];
  if(t){
   var chg=t.due!==due||t.time!==time||String(t.remind===undefined?'':t.remind)!==rem;
   Object.keys(rec).forEach(function(k){t[k]=rec[k]});
@@ -2278,19 +2419,34 @@ function sgSection(){
   +'<div class="actions"><button type="button" id="sgPick">'+(S.sign?'Replace PNG':'Upload PNG')+'</button>'+(S.sign?'<button type="button" class="dng" style="margin-top:0" id="sgDel">Remove</button>':'')+'</div><input type="file" id="sgFile" accept="image/png" class="hide">'
   +'<div class="kv" style="margin-top:16px"><span>Fingerprint for signing</span>'+(S.profile.cred?'On':'Off')+'</div><button type="button" id="bioBtn" style="width:100%;margin-top:8px">'+(S.profile.cred?'Turn off fingerprint':'Turn on fingerprint')+'</button>';
 }
+function fitSign(url,cb){
+ var img=new Image();
+ img.onload=function(){
+  var k=Math.min(1,500/img.width,200/img.height),w=Math.max(1,Math.round(img.width*k)),h=Math.max(1,Math.round(img.height*k)),c=document.createElement('canvas');
+  c.width=w;c.height=h;
+  var x=c.getContext('2d');x.drawImage(img,0,0,w,h);
+  var d=x.getImageData(0,0,w,h),a=d.data,i,opaque=true,px,py,x0=w,y0=h,x1=-1,y1=-1;
+  for(i=3;i<a.length;i+=4)if(a[i]<250){opaque=false;break}
+  if(opaque)for(i=0;i<a.length;i+=4){var l=.299*a[i]+.587*a[i+1]+.114*a[i+2];a[i+3]=l>235?0:(l>200?Math.round((235-l)/35*255):255)}
+  for(py=0;py<h;py++)for(px=0;px<w;px++)if(a[(py*w+px)*4+3]>24){if(px<x0)x0=px;if(px>x1)x1=px;if(py<y0)y0=py;if(py>y1)y1=py}
+  if(x1<0){cb(null);return}
+  x0=Math.max(0,x0-3);y0=Math.max(0,y0-3);x1=Math.min(w-1,x1+3);y1=Math.min(h-1,y1+3);
+  var cw=x1-x0+1,ch=y1-y0+1,o=document.createElement('canvas');
+  o.width=cw;o.height=ch;o.getContext('2d').putImageData(d,-x0,-y0,x0,y0,cw,ch);
+  cb(o.toDataURL('image/png'),cw,ch);
+ };
+ img.onerror=function(){cb(null)};
+ img.src=url;
+}
 function loadSign(f){
  if(!f)return;
  if(f.type!=='image/png'){toast('Choose a PNG image.','info');return}
  var rd=new FileReader();
  rd.onload=function(){
-  var img=new Image();
-  img.onload=function(){
-   var k=Math.min(1,420/img.width,170/img.height),w=Math.max(1,Math.round(img.width*k)),h=Math.max(1,Math.round(img.height*k)),c=document.createElement('canvas');
-   c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
-   S.sign=c.toDataURL('image/png');S.signDim={w:w,h:h};save();renderSettings();toast('Signature saved','ok');
-  };
-  img.onerror=function(){toast('That image couldn’t be read.','info')};
-  img.src=rd.result;
+  fitSign(rd.result,function(u,w,h){
+   if(!u){toast('That image couldn’t be read, or it looks empty.','info');return}
+   S.sign=u;S.signDim={w:w,h:h};S.signTrim=1;save();renderSettings();toast('Signature saved','ok');
+  });
  };
  rd.readAsDataURL(f);
 }
@@ -2389,7 +2545,13 @@ $('remBar').addEventListener('click',function(e){
  else if(b.dataset.rsnz){var t=tkList().filter(function(z){return z.id===b.dataset.rsnz})[0];if(t){t.notified=false;t.snoozeAt=Date.now()+600000;remQ=remQ.filter(function(x){return x!==t.id});save();renderRem();toast('Snoozed for 10 minutes','info')}}
  else if(b.dataset.rx){remQ.shift();renderRem()}
 });
-$('tkEdit').addEventListener('change',function(e){if(e.target.name==='tkty'){show('tkPh',e.target.value==='call');show('tkPl',e.target.value==='visit')}});
+$('tkEdit').addEventListener('change',function(e){
+ var id=e.target.id;
+ if(id==='tkVSch')tkFillPts(e.target.value,'tkVPoint','','Choose a point');
+ else if(id==='tkRSch')tkFillPts(e.target.value,'tkRPt','','All points');
+ tkSync();
+});
+$('tkEdit').addEventListener('input',function(e){if(e.target.id==='tkPlace'||e.target.id==='tkPName'||e.target.id==='tkWName'||e.target.id==='tkDue')tkSync()});
 document.addEventListener('visibilitychange',function(){if(!document.hidden)checkReminders()});
 document.querySelector('main').addEventListener('click',function(e){
  var b=e.target.closest('button');if(!b)return;
@@ -2429,6 +2591,7 @@ $('bnSheetWrap').addEventListener('click',function(e){
  var b=e.target.closest('button');if(!b)return;
  if(b.id==='tkvDone'){toggleTask(tkEditId);closeSheet()}
  else if(b.id==='tkvEdit'){var id=tkEditId;closeSheet();openTask(id)}
+ else if(b.id==='tkvOpen')openTaskReport(tkEditId);
  else if(b.id==='tkvClose')closeSheet();
 });
 $('sendDpo').addEventListener('click',function(){openSend('dpo')});
@@ -2715,8 +2878,21 @@ $('today').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day
 applyPrefs();renderAvatar();go('home');
 if(S.profile)renderLock();else renderSetup();
 checkReminders();setInterval(checkReminders,30000);
+if(S.sign&&!S.signTrim)fitSign(S.sign,function(u,w,h){if(u){S.sign=u;S.signDim={w:w,h:h}}S.signTrim=1;save()});
 })();
 </script>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}</script>
+
+<script>
+/* PWA service worker registration */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./sw.js")
+      .catch(function (error) {
+        console.error("Service worker registration failed:", error);
+      });
+  });
+}
+</script>
+
 </body>
 </html>
